@@ -19,7 +19,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       color: Color(0xFF0D1120),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(

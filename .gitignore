@@ -41,3 +41,26 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase sensitive files - DO NOT COMMIT
+# Configuration files with credentials
+google-services.json
+GoogleService-Info.plist
+firebase-credentials.json
+serviceAccountKey.json
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Firebase emulator data
+.emulators/
+
+# Firebase CLI cache
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+
+# Output files
+output.txt

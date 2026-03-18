@@ -1,0 +1,44 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Business profiles/logos
+    match /businesses/{businessId}/{allPaths=**} {
+      // Allow anyone to read public business files
+      allow read: if true;
+      
+      // Allow business owner to upload/update their own files
+      allow write: if isAuthenticated() &&
+                      get(/databases/(default)/documents/businesses/$(businessId)).data.ownerId == request.auth.uid &&
+                      request.resource.size < 5 * 1024 * 1024; // Max 5MB
+    }
+
+    // User avatars
+    match /users/{userId}/{allPaths=**} {
+      // Allow users to read their own files and anyone to read avatars
+      allow read: if true;
+      
+      // Allow users to write to their own directory
+      allow write: if isAuthenticated() &&
+                      request.auth.uid == userId &&
+                      request.resource.size < 2 * 1024 * 1024; // Max 2MB
+    }
+
+    // Temporary files (invoices, receipts, etc.)
+    match /temp/{allPaths=**} {
+      // Allow authenticated users to access temp files
+      allow read, write: if isAuthenticated() &&
+                            request.resource.size < 10 * 1024 * 1024; // Max 10MB
+    }
+
+    // Deny everything else by default
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

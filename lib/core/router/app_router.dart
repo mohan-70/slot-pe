@@ -19,10 +19,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     redirect: (context, state) async {
+      final isLoggingIn = state.matchedLocation == '/login';
+      final isSplash = state.matchedLocation == '/splash';
+
       return authState.when(
         data: (user) {
-          final isLoggingIn = state.matchedLocation == '/login';
-          final isSplash = state.matchedLocation == '/splash';
 
           if (user == null) {
             return isLoggingIn || isSplash ? null : '/login';

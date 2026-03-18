@@ -80,7 +80,7 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
     return ElevatedButton.icon(
       onPressed: isLoading ? null : () async {
         setState(() => isLoading = true);
-        await widget.onPressed();
+        widget.onPressed();
         if (mounted) setState(() => isLoading = false);
       },
       style: ElevatedButton.styleFrom(
