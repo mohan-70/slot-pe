@@ -378,10 +378,12 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                     generatedSlug == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Please fill all business details and hours'),
+                      content: Text(
+                        'Please fill all business details and hours',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                       backgroundColor: AppTheme.error,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   );
                   return;

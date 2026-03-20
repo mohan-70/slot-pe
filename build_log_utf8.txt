@@ -1,0 +1,12 @@
+﻿flutter : [  +97 ms] Could not find an option named "--web-renderer".
+At line:1 char:33
++ ... er pub get; flutter build web --release --web-renderer html --verbose ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([  +97 ms] Coul...-web-renderer".:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+[   +2 ms] Run 'flutter -h' (or 'flutter <command> -h') for available flutter commands and options.
+[        ] Running 1 shutdown hook
+[   +2 ms] Shutdown hooks complete
+[        ] exiting with code 64
