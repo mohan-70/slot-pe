@@ -29,7 +29,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             return isLoggingIn || isSplash ? null : '/login';
           }
 
-          // Check if business is set up
+
           final businessAsync = ref.watch(currentBusinessProvider);
           return businessAsync.when(
             data: (business) {
