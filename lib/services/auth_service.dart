@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in_web/google_sign_in_web.dart' as gis;
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
@@ -11,16 +12,37 @@ class AuthService {
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        return null; // User cancelled
-      }
+      if (kIsWeb) {
+        // Use GIS for web
+        return await _signInWithGoogleWeb();
+      } else {
+        // Non-web flow
+        final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+        if (googleUser == null) {
+          return null; // User cancelled
+        }
 
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final userCredential = await _firebaseAuth.signInWithCredential(credential);
+        return userCredential;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<UserCredential?> _signInWithGoogleWeb() async {
+    try {
+      final tokenResponse = await gis.initialize(_webClientId, null);
+      final googleUser = await gis.select_account(tokenResponse);
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
+        accessToken: googleUser.access_token,
+        idToken: googleUser.id_token,
       );
 
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
@@ -34,6 +56,10 @@ class AuthService {
     try {
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
+      if (kIsWeb) {
+        // GIS sign out
+        await gis.dispose();
+      }
     } catch (e) {
       // Error signing out
     }
@@ -47,4 +73,3 @@ class AuthService {
     return _firebaseAuth.currentUser;
   }
 }
-
