@@ -19,35 +19,43 @@ final goRouterProvider = Provider<GoRouter>((ref) {
 
   return GoRouter(
     redirect: (context, state) async {
-      final isLoggingIn = state.matchedLocation == '/login';
       final isSplash = state.matchedLocation == '/splash';
+      final isLoggingIn = state.matchedLocation == '/login';
+      final isSettingUp = state.matchedLocation == '/setup';
 
       return authState.when(
         data: (user) {
-
+          // 1. If not logged in, go to login (unless already there or on splash)
           if (user == null) {
-            return isLoggingIn || isSplash ? null : '/login';
+            return (isLoggingIn || isSplash) ? null : '/login';
           }
 
-
+          // 2. If logged in, check business status
           final businessAsync = ref.watch(currentBusinessProvider);
           return businessAsync.when(
             data: (business) {
               if (business == null) {
-                return state.matchedLocation == '/setup'
-                    ? null
-                    : '/setup';
+                // No business? Go to setup
+                return isSettingUp ? null : '/setup';
               }
-              if (isLoggingIn) {
+
+              // Has business? Don't stay on login, setup or splash
+              if (isLoggingIn || isSettingUp || isSplash) {
                 return '/dashboard';
               }
+
+              // Stay where you are
               return null;
             },
+            // While loading business, show splash
             loading: () => isSplash ? null : '/splash',
+            // On error, fall back to login
             error: (_, __) => '/login',
           );
         },
+        // While checking auth status, show splash
         loading: () => isSplash ? null : '/splash',
+        // On error, fall back to login
         error: (_, __) => '/login',
       );
     },
@@ -71,6 +79,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ShellRoute(
         builder: (context, state, child) => Scaffold(
           body: child,
+          resizeToAvoidBottomInset: true,
           bottomNavigationBar: const BottomNav(),
         ),
         routes: [

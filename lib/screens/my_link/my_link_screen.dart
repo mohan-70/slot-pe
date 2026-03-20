@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/business_provider.dart';
 
 class MyLinkScreen extends ConsumerWidget {
@@ -13,16 +14,16 @@ class MyLinkScreen extends ConsumerWidget {
     final businessAsync = ref.watch(currentBusinessProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
         title: Text(
           'My Link',
           style: GoogleFonts.syne(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
       ),
@@ -32,7 +33,7 @@ class MyLinkScreen extends ConsumerWidget {
             return Center(
               child: Text(
                 'Business not found',
-                style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+                style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
               ),
             );
           }
@@ -48,10 +49,10 @@ class MyLinkScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D1120),
+                    color: AppTheme.surface,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF6B7280).withOpacity(0.3),
+                      color: AppTheme.border.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -62,7 +63,7 @@ class MyLinkScreen extends ConsumerWidget {
                         'Your Booking Link',
                         style: GoogleFonts.dmSans(
                           fontSize: 12,
-                          color: const Color(0xFF6B7280),
+                          color: AppTheme.textMuted,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -73,7 +74,7 @@ class MyLinkScreen extends ConsumerWidget {
                           horizontal: 16,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF05080F),
+                          color: AppTheme.cardFill,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -83,26 +84,31 @@ class MyLinkScreen extends ConsumerWidget {
                                 bookingUrl,
                                 style: GoogleFonts.dmSans(
                                   fontSize: 14,
-                                  color: const Color(0xFF6366F1),
+                                  color: AppTheme.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             const SizedBox(width: 12),
                             GestureDetector(
                               onTap: () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: const Text('Link copied!'),
-                                    backgroundColor:
-                                        const Color(0xFF34D399),
-                                    duration: const Duration(seconds: 2),
+                                  const SnackBar(
+                                    content: Text(
+                                      'Link copied!',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    backgroundColor: AppTheme.success,
+                                    duration: Duration(seconds: 2),
                                   ),
                                 );
                               },
                               child: const Icon(
                                 Icons.copy,
-                                color: Color(0xFF6366F1),
+                                color: AppTheme.primary,
                               ),
                             ),
                           ],
@@ -119,7 +125,7 @@ class MyLinkScreen extends ConsumerWidget {
                   style: GoogleFonts.syne(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFFF0EDE8),
+                    color: AppTheme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -155,15 +161,6 @@ class MyLinkScreen extends ConsumerWidget {
                   width: double.infinity,
                   height: 50,
                   child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Color(0xFF6366F1),
-                        width: 2,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                     onPressed: () {
                       Share.share(
                         'Book an appointment with ${business.name} here: $bookingUrl',
@@ -171,14 +168,7 @@ class MyLinkScreen extends ConsumerWidget {
                       );
                     },
                     icon: const Icon(Icons.share_outlined),
-                    label: Text(
-                      'Share Link',
-                      style: GoogleFonts.dmSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: const Color(0xFF6366F1),
-                      ),
-                    ),
+                    label: const Text('Share Link'),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -187,10 +177,10 @@ class MyLinkScreen extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D1120),
+                    color: AppTheme.surface,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: const Color(0xFF6B7280).withOpacity(0.3),
+                      color: AppTheme.border.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -200,14 +190,14 @@ class MyLinkScreen extends ConsumerWidget {
                       Icon(
                         Icons.qr_code_2,
                         size: 80,
-                        color: const Color(0xFF6B7280).withOpacity(0.5),
+                        color: AppTheme.textMuted.withValues(alpha: 0.5),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         'QR Code — Coming Soon',
                         style: GoogleFonts.dmSans(
                           fontSize: 14,
-                          color: const Color(0xFF6B7280),
+                          color: AppTheme.textMuted,
                         ),
                       ),
                     ],
@@ -221,7 +211,7 @@ class MyLinkScreen extends ConsumerWidget {
                   style: GoogleFonts.syne(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFFF0EDE8),
+                    color: AppTheme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -256,7 +246,9 @@ class MyLinkScreen extends ConsumerWidget {
         error: (_, __) => Center(
           child: Text(
             'Error loading business',
-            style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+            style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),
@@ -271,7 +263,7 @@ class MyLinkScreen extends ConsumerWidget {
           width: 32,
           height: 32,
           decoration: const BoxDecoration(
-            color: Color(0xFF6366F1),
+            color: AppTheme.primary,
             shape: BoxShape.circle,
           ),
           alignment: Alignment.center,
@@ -293,7 +285,7 @@ class MyLinkScreen extends ConsumerWidget {
                 style: GoogleFonts.dmSans(
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
-                  color: const Color(0xFFF0EDE8),
+                  color: AppTheme.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
@@ -301,7 +293,7 @@ class MyLinkScreen extends ConsumerWidget {
                 description,
                 style: GoogleFonts.dmSans(
                   fontSize: 12,
-                  color: const Color(0xFF6B7280),
+                  color: AppTheme.textMuted,
                 ),
               ),
             ],
@@ -320,17 +312,24 @@ class MyLinkScreen extends ConsumerWidget {
     final whatsappUrl =
         'https://wa.me/?text=${Uri.encodeComponent(message)}';
 
+    final uri = Uri.parse(whatsappUrl);
     try {
-      if (await canLaunch(whatsappUrl)) {
-        await launch(whatsappUrl);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri);
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('WhatsApp not installed'),
-          backgroundColor: const Color(0xFFF87171),
-        ),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'WhatsApp not installed',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+      }
     }
   }
 }

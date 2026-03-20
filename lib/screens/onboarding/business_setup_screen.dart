@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/business_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/business_provider.dart';
@@ -82,8 +83,18 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        leading: currentPage > 0
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+                onPressed: () => _pageController.previousPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                ),
+              )
+            : null,
         title: Text('Set Up Your Business',
             style: GoogleFonts.syne(fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -112,73 +123,68 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
           const SizedBox(height: 24),
           TextField(
             controller: businessNameController,
-            style: const TextStyle(color: Color(0xFFF0EDE8)),
-            decoration: InputDecoration(
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: const InputDecoration(
               labelText: 'Business Name',
               hintText: 'e.g., John\'s Salon',
-              filled: true,
-              fillColor: const Color(0xFF0D1120),
             ),
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
-            value: selectedCategory,
+            initialValue: selectedCategory,
             items: categories
                 .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
                 .toList(),
             onChanged: (val) => setState(() => selectedCategory = val),
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Category',
-              filled: true,
-              fillColor: const Color(0xFF0D1120),
             ),
-            dropdownColor: const Color(0xFF0D1120),
-            style: const TextStyle(color: Color(0xFFF0EDE8)),
+            dropdownColor: AppTheme.surface,
+            style: const TextStyle(color: AppTheme.textPrimary),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: cityController,
-            style: const TextStyle(color: Color(0xFFF0EDE8)),
-            decoration: InputDecoration(
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: const InputDecoration(
               labelText: 'City',
               hintText: 'e.g., New York',
-              filled: true,
-              fillColor: const Color(0xFF0D1120),
             ),
           ),
           const SizedBox(height: 16),
           TextField(
             controller: phoneController,
-            style: const TextStyle(color: Color(0xFFF0EDE8)),
-            decoration: InputDecoration(
+            style: const TextStyle(color: AppTheme.textPrimary),
+            decoration: const InputDecoration(
               labelText: 'Phone',
               hintText: '+1 (555) 000-0000',
-              filled: true,
-              fillColor: const Color(0xFF0D1120),
             ),
           ),
           const SizedBox(height: 24),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFF0D1120),
-              borderRadius: BorderRadius.circular(8),
+              color: AppTheme.surface,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.border),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Your booking link:',
                     style: GoogleFonts.dmSans(
-                        color: const Color(0xFF6B7280), fontSize: 12)),
+                        color: AppTheme.textMuted, fontSize: 12)),
                 const SizedBox(height: 8),
                 Text(
                   generatedSlug != null
                       ? 'slotpe.in/$generatedSlug'
                       : 'slotpe.in/your-business',
                   style: GoogleFonts.syne(
-                      color: const Color(0xFF6366F1),
+                      color: AppTheme.primary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -187,12 +193,28 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: currentPage == 0
-                  ? () => _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      )
-                  : null,
+              onPressed: () {
+                if (businessNameController.text.isEmpty ||
+                    selectedCategory == null ||
+                    cityController.text.isEmpty ||
+                    phoneController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Please fill all business details',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      backgroundColor: AppTheme.error,
+                    ),
+                  );
+                  return;
+                }
+                _pageController.nextPage(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
               child: const Text('Next'),
             ),
           ),
@@ -229,12 +251,12 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                           }
                         });
                       },
-                      selectedColor: const Color(0xFF6366F1),
-                      backgroundColor: const Color(0xFF0D1120),
+                      selectedColor: AppTheme.primary,
+                      backgroundColor: AppTheme.surface,
                       labelStyle: TextStyle(
                           color: selectedDays.contains(day)
                               ? Colors.white
-                              : const Color(0xFFF0EDE8)),
+                              : AppTheme.textPrimary),
                     ))
                 .toList(),
           ),
@@ -262,13 +284,14 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0D1120),
+                          color: AppTheme.surface,
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.border),
                         ),
                         child: Text(
                           openTime?.format(context) ?? '09:00',
                           style: GoogleFonts.dmSans(
-                              color: const Color(0xFFF0EDE8), fontSize: 16),
+                              color: AppTheme.textPrimary, fontSize: 16),
                         ),
                       ),
                     ),
@@ -297,13 +320,14 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0D1120),
+                          color: AppTheme.surface,
                           borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: AppTheme.border),
                         ),
                         child: Text(
                           closeTime?.format(context) ?? '18:00',
                           style: GoogleFonts.dmSans(
-                              color: const Color(0xFFF0EDE8), fontSize: 16),
+                              color: AppTheme.textPrimary, fontSize: 16),
                         ),
                       ),
                     ),
@@ -318,18 +342,15 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                   fontSize: 14, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           DropdownButtonFormField<int>(
-            value: selectedDuration,
+            initialValue: selectedDuration,
             items: [15, 30, 45, 60]
                 .map((dur) =>
                     DropdownMenuItem(value: dur, child: Text('$dur mins')))
                 .toList(),
             onChanged: (val) => setState(() => selectedDuration = val ?? 30),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color(0xFF0D1120),
-            ),
-            dropdownColor: const Color(0xFF0D1120),
-            style: const TextStyle(color: Color(0xFFF0EDE8)),
+            decoration: const InputDecoration(),
+            dropdownColor: AppTheme.surface,
+            style: const TextStyle(color: AppTheme.textPrimary),
           ),
           const SizedBox(height: 32),
           SizedBox(
@@ -337,16 +358,36 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 final user = ref.read(currentUserProvider);
-                if (user != null &&
-                    businessNameController.text.isNotEmpty &&
-                    selectedCategory != null &&
-                    cityController.text.isNotEmpty &&
-                    phoneController.text.isNotEmpty &&
-                    selectedDays.isNotEmpty &&
-                    openTime != null &&
-                    closeTime != null &&
-                    generatedSlug != null) {
-                  final business = BusinessModel(
+                if (user == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please sign in first'),
+                      backgroundColor: AppTheme.error,
+                    ),
+                  );
+                  return;
+                }
+
+                if (businessNameController.text.isEmpty ||
+                    selectedCategory == null ||
+                    cityController.text.isEmpty ||
+                    phoneController.text.isEmpty ||
+                    selectedDays.isEmpty ||
+                    openTime == null ||
+                    closeTime == null ||
+                    generatedSlug == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please fill all business details and hours'),
+                      backgroundColor: AppTheme.error,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                  return;
+                }
+
+                final business = BusinessModel(
                     id: '',
                     ownerId: user.uid,
                     name: businessNameController.text,
@@ -363,19 +404,29 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                     createdAt: DateTime.now(),
                   );
 
+                  final messenger = ScaffoldMessenger.of(context);
+                  final goRouter = GoRouter.of(context);
+
                   try {
                     await ref
                         .read(businessServiceProvider)
                         .createBusiness(business);
                     if (mounted) {
-                      context.go('/services-setup');
+                      goRouter.go('/services-setup');
                     }
                   } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error: $e')),
-                    );
+                    if (mounted) {
+                      messenger.showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Error: $e',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    }
                   }
-                }
               },
               child: const Text('Create My Profile'),
             ),
@@ -384,4 +435,4 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
       ),
     );
   }
-}
+}

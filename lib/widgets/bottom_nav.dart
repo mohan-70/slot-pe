@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../core/theme/app_theme.dart';
 
 class BottomNav extends StatelessWidget {
   const BottomNav({Key? key}) : super(key: key);
@@ -12,11 +12,11 @@ class BottomNav extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1120),
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: AppTheme.textPrimary.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -25,9 +25,9 @@ class BottomNav extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: BottomNavigationBar(
-          backgroundColor: const Color(0xFF0D1120),
-          selectedItemColor: const Color(0xFF6366F1),
-          unselectedItemColor: const Color(0xFF6B7280),
+          backgroundColor: AppTheme.surface,
+          selectedItemColor: AppTheme.primary,
+          unselectedItemColor: AppTheme.textMuted,
           type: BottomNavigationBarType.fixed,
           currentIndex: _getSelectedIndex(currentLocation),
           onTap: (index) => _onNavTapped(context, index),

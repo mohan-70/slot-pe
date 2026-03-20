@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../../models/booking_model.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/service_model.dart';
-import '../../providers/booking_provider.dart';
-import '../../providers/business_provider.dart';
-import '../../services/booking_service.dart';
 import '../../widgets/service_card.dart';
 
 class CustomerBookingScreen extends ConsumerStatefulWidget {
@@ -53,16 +50,21 @@ class _CustomerBookingScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(
           'Book an Appointment',
           style: GoogleFonts.syne(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
       ),
@@ -104,13 +106,6 @@ class _CustomerBookingScreenState
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6366F1),
-                  disabledBackgroundColor: const Color(0xFF6B7280),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
                 onPressed: _isLoading ? null : _submitBooking,
                 child: _isLoading
                     ? const SizedBox(
@@ -122,14 +117,7 @@ class _CustomerBookingScreenState
                               AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
-                    : Text(
-                        'Confirm Booking',
-                        style: GoogleFonts.dmSans(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
+                    : const Text('Confirm Booking'),
               ),
             ),
             const SizedBox(height: 16),
@@ -144,22 +132,26 @@ class _CustomerBookingScreenState
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1120),
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFF6B7280).withOpacity(0.3),
+          color: AppTheme.border.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Business Name',
-            style: GoogleFonts.syne(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFFF0EDE8),
+          Flexible(
+            child: Text(
+              'Business Name',
+              style: GoogleFonts.syne(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimary,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           const SizedBox(height: 4),
@@ -171,10 +163,10 @@ class _CustomerBookingScreenState
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF6366F1).withOpacity(0.2),
+                  color: AppTheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                   border: Border.all(
-                    color: const Color(0xFF6366F1),
+                    color: AppTheme.primary,
                     width: 1,
                   ),
                 ),
@@ -183,16 +175,20 @@ class _CustomerBookingScreenState
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF6366F1),
+                    color: AppTheme.primary,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
-              Text(
-                'City Name',
-                style: GoogleFonts.dmSans(
-                  fontSize: 12,
-                  color: const Color(0xFF6B7280),
+              Flexible(
+                child: Text(
+                  'City Name',
+                  style: GoogleFonts.dmSans(
+                    fontSize: 12,
+                    color: AppTheme.textMuted,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -208,7 +204,7 @@ class _CustomerBookingScreenState
       style: GoogleFonts.syne(
         fontSize: 16,
         fontWeight: FontWeight.bold,
-        color: const Color(0xFFF0EDE8),
+        color: AppTheme.textPrimary,
       ),
     );
   }
@@ -283,13 +279,13 @@ class _CustomerBookingScreenState
                 ),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF6366F1)
-                      : const Color(0xFF0D1120),
+                      ? AppTheme.primary
+                      : AppTheme.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
                     color: isSelected
-                        ? const Color(0xFF6366F1)
-                        : const Color(0xFF6B7280).withOpacity(0.3),
+                        ? AppTheme.primary
+                        : AppTheme.border.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -301,7 +297,7 @@ class _CustomerBookingScreenState
                         fontSize: 12,
                         color: isSelected
                             ? Colors.white
-                            : const Color(0xFF6B7280),
+                            : AppTheme.textMuted,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -312,7 +308,7 @@ class _CustomerBookingScreenState
                         fontWeight: FontWeight.bold,
                         color: isSelected
                             ? Colors.white
-                            : const Color(0xFFF0EDE8),
+                            : AppTheme.textPrimary,
                       ),
                     ),
                   ],
@@ -348,6 +344,7 @@ class _CustomerBookingScreenState
         crossAxisCount: 3,
         mainAxisSpacing: 8,
         crossAxisSpacing: 8,
+        mainAxisExtent: 44,
       ),
       itemCount: timeSlots.length,
       itemBuilder: (context, index) {
@@ -363,13 +360,13 @@ class _CustomerBookingScreenState
           child: Container(
             decoration: BoxDecoration(
               color: isSelected
-                  ? const Color(0xFF6366F1)
-                  : const Color(0xFF0D1120),
+                  ? AppTheme.primary
+                  : AppTheme.surface,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: isSelected
-                    ? const Color(0xFF6366F1)
-                    : const Color(0xFF6B7280).withOpacity(0.3),
+                    ? AppTheme.primary
+                    : AppTheme.border.withValues(alpha: 0.3),
                 width: 1,
               ),
             ),
@@ -380,7 +377,7 @@ class _CustomerBookingScreenState
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
                   color:
-                      isSelected ? Colors.white : const Color(0xFFF0EDE8),
+                      isSelected ? Colors.white : AppTheme.textPrimary,
                 ),
               ),
             ),
@@ -395,30 +392,20 @@ class _CustomerBookingScreenState
       children: [
         TextField(
           controller: _nameController,
-          style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
-          decoration: InputDecoration(
+          style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
+          decoration: const InputDecoration(
             labelText: 'Full Name',
             hintText: 'Enter your full name',
-            labelStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            hintStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
         ),
         const SizedBox(height: 12),
         TextField(
           controller: _phoneController,
           keyboardType: TextInputType.phone,
-          style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+          style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
           decoration: InputDecoration(
             labelText: 'Phone Number',
             hintText: 'Enter 10-digit phone number',
-            labelStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            hintStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
             errorText:
                 _phoneController.text.isNotEmpty &&
                         _phoneController.text.length != 10
@@ -431,15 +418,10 @@ class _CustomerBookingScreenState
         TextField(
           controller: _notesController,
           maxLines: 3,
-          style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
-          decoration: InputDecoration(
+          style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
+          decoration: const InputDecoration(
             labelText: 'Notes (Optional)',
             hintText: 'Add any special requests...',
-            labelStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            hintStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
           ),
         ),
       ],
@@ -449,9 +431,13 @@ class _CustomerBookingScreenState
   Future<void> _submitBooking() async {
     if (_selectedService == null || _selectedDate == null || _selectedTimeSlot == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please fill all required fields'),
-          backgroundColor: const Color(0xFFF87171),
+        const SnackBar(
+          content: Text(
+            'Please fill all required fields',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          backgroundColor: AppTheme.error,
         ),
       );
       return;
@@ -461,9 +447,13 @@ class _CustomerBookingScreenState
         _phoneController.text.isEmpty ||
         _phoneController.text.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Please enter valid customer details'),
-          backgroundColor: const Color(0xFFF87171),
+        const SnackBar(
+          content: Text(
+            'Please enter valid customer details',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          backgroundColor: AppTheme.error,
         ),
       );
       return;
@@ -485,8 +475,12 @@ class _CustomerBookingScreenState
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: const Color(0xFFF87171),
+            content: Text(
+              'Error: $e',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            backgroundColor: AppTheme.error,
           ),
         );
       }
@@ -504,7 +498,7 @@ class _CustomerBookingScreenState
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -512,7 +506,7 @@ class _CustomerBookingScreenState
             Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
-                color: Color(0xFF34D399),
+                color: AppTheme.success,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
@@ -527,7 +521,7 @@ class _CustomerBookingScreenState
               style: GoogleFonts.syne(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFFF0EDE8),
+                color: AppTheme.textPrimary,
               ),
             ),
             const SizedBox(height: 12),
@@ -535,7 +529,7 @@ class _CustomerBookingScreenState
               'Your appointment has been confirmed',
               style: GoogleFonts.dmSans(
                 fontSize: 14,
-                color: const Color(0xFF6B7280),
+                color: AppTheme.textMuted,
               ),
               textAlign: TextAlign.center,
             ),

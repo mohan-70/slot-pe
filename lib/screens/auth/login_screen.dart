@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/business_provider.dart';
 
@@ -11,7 +12,8 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
+      resizeToAvoidBottomInset: true,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -23,7 +25,7 @@ class LoginScreen extends ConsumerWidget {
                 style: GoogleFonts.syne(
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF6366F1),
+                  color: AppTheme.primary,
                 ),
               ),
               const SizedBox(height: 16),
@@ -31,26 +33,46 @@ class LoginScreen extends ConsumerWidget {
                 'Appointments. Simplified.',
                 style: GoogleFonts.dmSans(
                   fontSize: 18,
-                  color: const Color(0xFF6B7280),
+                  color: AppTheme.textMuted,
                 ),
               ),
               const SizedBox(height: 48),
               _GoogleSignInButton(
                 onPressed: () async {
-                  final authService = ref.read(authServiceProvider);
-                  final userCredential = await authService.signInWithGoogle();
-                  if (userCredential != null && context.mounted) {
-                    final business =
-                        await ref.read(businessServiceProvider).getBusinessByOwnerId(
-                              userCredential.user!.uid,
-                            );
+                  try {
+                    final authService = ref.read(authServiceProvider);
+                    final userCredential = await authService.signInWithGoogle();
 
-                    if (context.mounted) {
-                      if (business != null) {
-                        context.go('/dashboard');
-                      } else {
-                        context.go('/setup');
+                    if (userCredential != null && context.mounted) {
+                      final business = await ref
+                          .read(businessServiceProvider)
+                          .getBusinessByOwnerId(
+                            userCredential.user!.uid,
+                          );
+
+                      if (context.mounted) {
+                        if (business != null) {
+                          context.go('/dashboard');
+                        } else {
+                          context.go('/setup');
+                        }
                       }
+                    } else if (context.mounted) {
+                      // Only show snackbar if user didn't cancel (userCredential == null)
+                      // This part depends on if we can distinguish cancels from errors in authService
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Error signing in: $e',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          backgroundColor: AppTheme.error,
+                        ),
+                      );
                     }
                   }
                 },
@@ -63,8 +85,9 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
+
 class _GoogleSignInButton extends StatefulWidget {
-  final VoidCallback onPressed;
+  final Future<void> Function() onPressed;
 
   const _GoogleSignInButton({required this.onPressed});
 
@@ -78,11 +101,16 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: isLoading ? null : () async {
-        setState(() => isLoading = true);
-        widget.onPressed();
-        if (mounted) setState(() => isLoading = false);
-      },
+      onPressed: isLoading
+          ? null
+          : () async {
+              setState(() => isLoading = true);
+              try {
+                await widget.onPressed();
+              } finally {
+                if (mounted) setState(() => isLoading = false);
+              }
+            },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
@@ -104,6 +132,8 @@ class _GoogleSignInButtonState extends State<_GoogleSignInButton> {
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
       ),
     );
   }

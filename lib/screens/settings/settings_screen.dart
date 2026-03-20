@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/business_provider.dart';
 import '../../services/auth_service.dart';
@@ -20,16 +21,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final userAsync = ref.watch(authStateProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
         title: Text(
           'Settings',
           style: GoogleFonts.syne(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
       ),
@@ -39,7 +40,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             return Center(
               child: Text(
                 'Business not found',
-                style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+                style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
               ),
             );
           }
@@ -69,10 +70,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D1120),
+                    color: AppTheme.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF6B7280).withOpacity(0.3),
+                      color: AppTheme.border.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -85,14 +86,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             'Manage your services',
                             style: GoogleFonts.dmSans(
                               fontSize: 14,
-                              color: const Color(0xFFF0EDE8),
+                              color: AppTheme.textPrimary,
                             ),
                           ),
                           GestureDetector(
                             onTap: () => context.go('/services-setup'),
                             child: const Icon(
                               Icons.arrow_forward,
-                              color: Color(0xFF6366F1),
+                              color: AppTheme.primary,
                             ),
                           ),
                         ],
@@ -102,7 +103,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         'Add, edit, or remove your services',
                         style: GoogleFonts.dmSans(
                           fontSize: 12,
-                          color: const Color(0xFF6B7280),
+                          color: AppTheme.textMuted,
                         ),
                       ),
                     ],
@@ -116,10 +117,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0D1120),
+                    color: AppTheme.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: const Color(0xFF6B7280).withOpacity(0.3),
+                      color: AppTheme.border.withValues(alpha: 0.3),
                       width: 1,
                     ),
                   ),
@@ -133,7 +134,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             'Current Plan',
                             style: GoogleFonts.dmSans(
                               fontSize: 12,
-                              color: const Color(0xFF6B7280),
+                              color: AppTheme.textMuted,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -142,7 +143,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             style: GoogleFonts.syne(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFFF0EDE8),
+                              color: AppTheme.textPrimary,
                             ),
                           ),
                         ],
@@ -154,7 +155,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         ),
                         decoration: BoxDecoration(
                           color: _getPlanColor(business.planType)
-                              .withOpacity(0.2),
+                              .withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: _getPlanColor(business.planType),
@@ -198,8 +199,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   height: 50,
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.error,
                       side: const BorderSide(
-                        color: Color(0xFFF87171),
+                        color: AppTheme.error,
                         width: 2,
                       ),
                       shape: RoundedRectangleBorder(
@@ -207,14 +209,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ),
                     ),
                     onPressed: () => _showSignOutDialog(context),
-                    child: Text(
-                      'Sign Out',
-                      style: GoogleFonts.dmSans(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: const Color(0xFFF87171),
-                      ),
-                    ),
+                    child: const Text('Sign Out'),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -226,7 +221,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         error: (_, __) => Center(
           child: Text(
             'Error loading settings',
-            style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+            style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
           ),
         ),
       ),
@@ -241,7 +236,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         style: GoogleFonts.syne(
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: const Color(0xFFF0EDE8),
+          color: AppTheme.textPrimary,
         ),
       ),
     );
@@ -251,10 +246,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1120),
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFF6B7280).withOpacity(0.3),
+          color: AppTheme.border.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
@@ -265,7 +260,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             label,
             style: GoogleFonts.dmSans(
               fontSize: 12,
-              color: const Color(0xFF6B7280),
+              color: AppTheme.textMuted,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -274,9 +269,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             value,
             style: GoogleFonts.dmSans(
               fontSize: 14,
-              color: const Color(0xFFF0EDE8),
+              color: AppTheme.textPrimary,
               fontWeight: FontWeight.w500,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -288,9 +285,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       case 'pro':
         return const Color(0xFFFFD700);
       case 'basic':
-        return const Color(0xFF34D399);
+        return AppTheme.success;
       default:
-        return const Color(0xFF6B7280);
+        return AppTheme.textMuted;
     }
   }
 
@@ -298,18 +295,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
         title: Text(
           'Sign Out',
           style: GoogleFonts.syne(
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
         content: Text(
           'Are you sure you want to sign out?',
           style: GoogleFonts.dmSans(
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
         actions: [
@@ -318,21 +315,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: Text(
               'Cancel',
               style: GoogleFonts.dmSans(
-                color: const Color(0xFF6366F1),
+                color: AppTheme.primary,
               ),
             ),
           ),
           TextButton(
             onPressed: () async {
               await AuthService().signOut();
-              if (mounted) {
+              if (context.mounted) {
                 context.go('/login');
               }
             },
             child: Text(
               'Sign Out',
               style: GoogleFonts.dmSans(
-                color: const Color(0xFFF87171),
+                color: AppTheme.error,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:uuid/uuid.dart';
+import '../../core/theme/app_theme.dart';
 import '../../models/service_model.dart';
-import '../../providers/business_provider.dart';
 
 class ServicesSetupScreen extends ConsumerStatefulWidget {
   const ServicesSetupScreen({Key? key}) : super(key: key);
@@ -24,8 +24,8 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
 
     showModalBottomSheet(
       context: context,
+      backgroundColor: AppTheme.surface,
       builder: (context) => Container(
-        color: const Color(0xFF0D1120),
         padding: const EdgeInsets.all(24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -37,39 +37,33 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
             const SizedBox(height: 24),
             TextField(
               controller: serviceNameController,
-              style: const TextStyle(color: Color(0xFFF0EDE8)),
-              decoration: InputDecoration(
+              style: const TextStyle(color: AppTheme.textPrimary),
+              decoration: const InputDecoration(
                 labelText: 'Service Name',
-                filled: true,
-                fillColor: const Color(0xFF05080F),
               ),
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              value: selectedDuration,
+              initialValue: selectedDuration,
               items: [15, 30, 45, 60, 90, 120]
                   .map((dur) => DropdownMenuItem(
                       value: dur, child: Text('$dur mins')))
                   .toList(),
               onChanged: (val) => selectedDuration = val ?? 30,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Duration',
-                filled: true,
-                fillColor: const Color(0xFF05080F),
               ),
-              dropdownColor: const Color(0xFF0D1120),
-              style: const TextStyle(color: Color(0xFFF0EDE8)),
+              dropdownColor: AppTheme.surface,
+              style: const TextStyle(color: AppTheme.textPrimary),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: priceController,
-              style: const TextStyle(color: Color(0xFFF0EDE8)),
+              style: const TextStyle(color: AppTheme.textPrimary),
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 prefixText: '₹ ',
                 labelText: 'Price',
-                filled: true,
-                fillColor: const Color(0xFF05080F),
               ),
             ),
             const SizedBox(height: 24),
@@ -102,8 +96,13 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text('Add Services',
             style: GoogleFonts.syne(fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -116,8 +115,8 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.shopping_bag_outlined,
-                            size: 64, color: const Color(0xFF6B7280)),
+                        const Icon(Icons.shopping_bag_outlined,
+                            size: 64, color: AppTheme.textMuted),
                         const SizedBox(height: 16),
                         Text('No services added yet',
                             style: GoogleFonts.dmSans()),
@@ -130,7 +129,6 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
                     itemBuilder: (context, index) {
                       final service = services[index];
                       return Card(
-                        color: const Color(0xFF0D1120),
                         margin: const EdgeInsets.only(bottom: 12),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
@@ -139,26 +137,31 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
                             children: [
                               Expanded(
                                 child: Column(
+                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                   children: [
                                     Text(service.name,
                                         style: GoogleFonts.dmSans(
                                             fontSize: 16,
-                                            fontWeight: FontWeight.w600)),
+                                            fontWeight: FontWeight.w600),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis),
                                     const SizedBox(height: 4),
                                     Text(
                                       '${service.durationMinutes} mins • ₹${service.price.toStringAsFixed(0)}',
                                       style: GoogleFonts.dmSans(
-                                          color: const Color(0xFF6B7280),
+                                          color: AppTheme.textMuted,
                                           fontSize: 12),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete_outline,
-                                    color: Color(0xFFF87171)),
+                                    color: AppTheme.error),
                                 onPressed: () {
                                   setState(() => services.removeAt(index));
                                 },
@@ -191,11 +194,6 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
                         : () async {
                             context.go('/dashboard');
                           },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: services.isEmpty
-                          ? const Color(0xFF6B7280)
-                          : const Color(0xFF6366F1),
-                    ),
                     child: const Text('Continue to Dashboard'),
                   ),
                 ),
@@ -206,4 +204,4 @@ class _ServicesSetupScreenState extends ConsumerState<ServicesSetupScreen> {
       ),
     );
   }
-}
+}

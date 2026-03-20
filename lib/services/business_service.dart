@@ -22,7 +22,6 @@ class BusinessService {
         ...doc.docs[0].data(),
       });
     } catch (e) {
-      print('Error getting business: $e');
       return null;
     }
   }
@@ -44,7 +43,6 @@ class BusinessService {
         ...doc.docs[0].data(),
       });
     } catch (e) {
-      print('Error getting business by slug: $e');
       return null;
     }
   }
@@ -60,7 +58,6 @@ class BusinessService {
 
       return docRef.id;
     } catch (e) {
-      print('Error creating business: $e');
       rethrow;
     }
   }
@@ -72,7 +69,6 @@ class BusinessService {
           .doc(business.id)
           .update(business.toMap());
     } catch (e) {
-      print('Error updating business: $e');
       rethrow;
     }
   }
@@ -87,7 +83,6 @@ class BusinessService {
 
       return doc.docs.isEmpty;
     } catch (e) {
-      print('Error checking slug availability: $e');
       return false;
     }
   }

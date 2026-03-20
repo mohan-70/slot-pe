@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/theme/app_theme.dart';
 import '../models/booking_model.dart';
 import '../services/booking_service.dart';
 
@@ -30,56 +31,63 @@ class _BookingCardState extends State<BookingCard> {
   Color _getStatusColor() {
     switch (widget.booking.status) {
       case 'pending':
-        return const Color(0xFFF59E0B);
+        return AppTheme.warning;
       case 'confirmed':
-        return const Color(0xFF34D399);
+        return AppTheme.success;
       case 'cancelled':
-        return const Color(0xFFF87171);
+        return AppTheme.error;
       case 'completed':
-        return const Color(0xFF6B7280);
+        return AppTheme.textMuted;
       default:
-        return const Color(0xFF6B7280);
+        return AppTheme.textMuted;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: const Color(0xFF0D1120),
+      color: AppTheme.surface,
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.booking.customerName,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFFF0EDE8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.booking.customerName,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textPrimary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      widget.booking.customerPhone,
-                      style: GoogleFonts.dmSans(
-                        fontSize: 12,
-                        color: const Color(0xFF6B7280),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.booking.customerPhone,
+                        style: GoogleFonts.dmSans(
+                          fontSize: 12,
+                          color: AppTheme.textMuted,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getStatusColor().withOpacity(0.2),
+                    color: _getStatusColor().withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -106,14 +114,18 @@ class _BookingCardState extends State<BookingCard> {
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
                       Text(
                         '${widget.booking.date} at ${widget.booking.timeSlot}',
                         style: GoogleFonts.dmSans(
                           fontSize: 12,
-                          color: const Color(0xFF6B7280),
+                          color: AppTheme.textMuted,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -132,7 +144,7 @@ class _BookingCardState extends State<BookingCard> {
                           icon: const Icon(Icons.check),
                           label: const Text('Confirm'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF34D399),
+                            backgroundColor: AppTheme.success,
                             foregroundColor: Colors.white,
                           ),
                           onPressed: isLoading
@@ -154,7 +166,7 @@ class _BookingCardState extends State<BookingCard> {
                         icon: const Icon(Icons.close),
                         label: const Text('Cancel'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF87171),
+                          backgroundColor: AppTheme.error,
                           foregroundColor: Colors.white,
                         ),
                         onPressed: isLoading
@@ -178,4 +190,4 @@ class _BookingCardState extends State<BookingCard> {
       ),
     );
   }
-}
+}

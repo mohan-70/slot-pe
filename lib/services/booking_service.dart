@@ -17,7 +17,6 @@ class BookingService {
 
       return docRef.id;
     } catch (e) {
-      print('Error creating booking: $e');
       rethrow;
     }
   }
@@ -40,7 +39,6 @@ class BookingService {
               }))
           .toList();
     } catch (e) {
-      print('Error getting bookings for business: $e');
       return [];
     }
   }
@@ -65,7 +63,6 @@ class BookingService {
               }))
           .toList();
     } catch (e) {
-      print('Error getting upcoming bookings: $e');
       return [];
     }
   }
@@ -77,7 +74,6 @@ class BookingService {
           .doc(bookingId)
           .update({'status': status});
     } catch (e) {
-      print('Error updating booking status: $e');
       rethrow;
     }
   }
@@ -100,7 +96,6 @@ class BookingService {
 
       return doc.docs.length;
     } catch (e) {
-      print('Error getting monthly booking count: $e');
       return 0;
     }
   }

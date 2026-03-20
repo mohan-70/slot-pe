@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/booking_provider.dart';
 import '../../widgets/booking_card.dart';
 
@@ -34,23 +34,23 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen>
     final upcomingBookings = ref.watch(upcomingBookingsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: const Color(0xFF0D1120),
+        backgroundColor: AppTheme.surface,
         title: Text(
           'Bookings',
           style: GoogleFonts.syne(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFFF0EDE8),
+            color: AppTheme.textPrimary,
           ),
         ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: const Color(0xFF6366F1),
-          labelColor: const Color(0xFFF0EDE8),
-          unselectedLabelColor: const Color(0xFF6B7280),
+          indicatorColor: AppTheme.primary,
+          labelColor: AppTheme.textPrimary,
+          unselectedLabelColor: AppTheme.textMuted,
           labelStyle: GoogleFonts.dmSans(
             fontWeight: FontWeight.bold,
             fontSize: 14,
@@ -75,7 +75,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen>
                     itemBuilder: (context, index) => BookingCard(
                       booking: bookings[index],
                       onStatusChanged: () {
-                        ref.refresh(todayBookingsProvider);
+                        ref.invalidate(todayBookingsProvider);
                       },
                     ),
                   ),
@@ -99,7 +99,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen>
                       itemBuilder: (context, index) => BookingCard(
                         booking: upcoming[index],
                         onStatusChanged: () {
-                          ref.refresh(upcomingBookingsProvider);
+                          ref.invalidate(upcomingBookingsProvider);
                         },
                       ),
                     );
@@ -118,7 +118,7 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen>
                     itemBuilder: (context, index) => BookingCard(
                       booking: bookings[index],
                       onStatusChanged: () {
-                        ref.refresh(upcomingBookingsProvider);
+                        ref.invalidate(upcomingBookingsProvider);
                       },
                     ),
                   ),
@@ -138,14 +138,14 @@ class _BookingsScreenState extends ConsumerState<BookingsScreen>
           Icon(
             Icons.inbox_outlined,
             size: 64,
-            color: const Color(0xFF6B7280).withOpacity(0.5),
+            color: AppTheme.textMuted.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 16),
           Text(
             'No bookings in $tabName',
             style: GoogleFonts.dmSans(
               fontSize: 16,
-              color: const Color(0xFF6B7280),
+              color: AppTheme.textMuted,
             ),
           ),
         ],

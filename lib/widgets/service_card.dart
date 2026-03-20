@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../core/theme/app_theme.dart';
 import '../models/service_model.dart';
 
 class ServiceCard extends StatelessWidget {
@@ -23,16 +24,17 @@ class ServiceCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF6366F1) : const Color(0xFF0D1120),
+          color: isSelected ? AppTheme.primary : AppTheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? const Color(0xFF6366F1)
-                : const Color(0xFF6B7280).withOpacity(0.3),
+                ? AppTheme.primary
+                : AppTheme.border.withValues(alpha: 0.3),
             width: 2,
           ),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -41,7 +43,7 @@ class ServiceCard extends StatelessWidget {
               style: GoogleFonts.dmSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : const Color(0xFFF0EDE8),
+                color: isSelected ? Colors.white : AppTheme.textPrimary,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -54,8 +56,8 @@ class ServiceCard extends StatelessWidget {
                   style: GoogleFonts.dmSans(
                     fontSize: 12,
                     color: isSelected
-                        ? Colors.white.withOpacity(0.8)
-                        : const Color(0xFF6B7280),
+                        ? Colors.white.withValues(alpha: 0.8)
+                        : AppTheme.textMuted,
                   ),
                 ),
                 Text(
@@ -63,7 +65,7 @@ class ServiceCard extends StatelessWidget {
                   style: GoogleFonts.syne(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.white : const Color(0xFF6366F1),
+                    color: isSelected ? Colors.white : AppTheme.primary,
                   ),
                 ),
               ],
@@ -73,4 +75,4 @@ class ServiceCard extends StatelessWidget {
       ),
     );
   }
-}
+}

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 class AuthService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  static const String _webClientId = '197963463385-1p5ketskq7qqokcq533di8ilmucmdhtl.apps.googleusercontent.com';
+  static const String _webClientId = '440294729258-9960n1mgber0odntftv141os55e46ito.apps.googleusercontent.com';
   final GoogleSignIn _googleSignIn = GoogleSignIn(
     clientId: kIsWeb ? _webClientId : null,
   );
@@ -13,7 +13,7 @@ class AuthService {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return null;
+        return null; // User cancelled
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -26,8 +26,7 @@ class AuthService {
       final userCredential = await _firebaseAuth.signInWithCredential(credential);
       return userCredential;
     } catch (e) {
-      print('Error signing in with Google: $e');
-      return null;
+      rethrow;
     }
   }
 
@@ -36,7 +35,7 @@ class AuthService {
       await _firebaseAuth.signOut();
       await _googleSignIn.signOut();
     } catch (e) {
-      print('Error signing out: $e');
+      // Error signing out
     }
   }
 

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 class BusinessModel {
   final String id;
   final String ownerId;

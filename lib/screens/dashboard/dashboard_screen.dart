@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
-import '../../models/booking_model.dart';
+import '../../core/theme/app_theme.dart';
 import '../../providers/booking_provider.dart';
 import '../../providers/business_provider.dart';
 import '../../widgets/booking_card.dart';
@@ -17,7 +16,8 @@ class DashboardScreen extends ConsumerWidget {
     final todayBookingsAsync = ref.watch(todayBookingsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF05080F),
+      backgroundColor: AppTheme.background,
+      resizeToAvoidBottomInset: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
         child: businessAsync.when(
@@ -38,7 +38,7 @@ class DashboardScreen extends ConsumerWidget {
                     style: GoogleFonts.syne(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFFF0EDE8),
+                      color: AppTheme.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -66,7 +66,7 @@ class DashboardScreen extends ConsumerWidget {
                   style: GoogleFonts.syne(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFFF0EDE8),
+                    color: AppTheme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -82,7 +82,7 @@ class DashboardScreen extends ConsumerWidget {
                           itemBuilder: (context, index) => BookingCard(
                             booking: bookings[index],
                             onStatusChanged: () {
-                              ref.refresh(todayBookingsProvider);
+                              ref.invalidate(todayBookingsProvider);
                             },
                           ),
                         ),
@@ -106,7 +106,7 @@ class DashboardScreen extends ConsumerWidget {
         error: (_, __) => Center(
           child: Text(
             'Error loading dashboard',
-            style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
+            style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
           ),
         ),
       ),
@@ -116,7 +116,7 @@ class DashboardScreen extends ConsumerWidget {
   AppBar _buildAppBar(String businessName) {
     return AppBar(
       elevation: 0,
-      backgroundColor: const Color(0xFF0D1120),
+      backgroundColor: AppTheme.surface,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -125,7 +125,7 @@ class DashboardScreen extends ConsumerWidget {
             style: GoogleFonts.syne(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: const Color(0xFF6B7280),
+              color: AppTheme.textMuted,
             ),
           ),
           Text(
@@ -133,15 +133,17 @@ class DashboardScreen extends ConsumerWidget {
             style: GoogleFonts.syne(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFFF0EDE8),
+              color: AppTheme.textPrimary,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
       actions: [
         IconButton(
           icon: const Icon(Icons.notifications_outlined),
-          color: const Color(0xFFF0EDE8),
+          color: AppTheme.textPrimary,
           onPressed: () {},
         ),
       ],
@@ -210,24 +212,24 @@ class DashboardScreen extends ConsumerWidget {
       width: 160,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0D1120),
+        color: AppTheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: const Color(0xFF6B7280).withOpacity(0.3),
+          color: AppTheme.border.withValues(alpha: 0.3),
           width: 1,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: const Color(0xFF6366F1), size: 24),
+          Icon(icon, color: AppTheme.primary, size: 24),
           const SizedBox(height: 12),
           Text(
             value,
             style: GoogleFonts.syne(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFFF0EDE8),
+              color: AppTheme.textPrimary,
             ),
           ),
           const SizedBox(height: 4),
@@ -235,7 +237,7 @@ class DashboardScreen extends ConsumerWidget {
             label,
             style: GoogleFonts.dmSans(
               fontSize: 12,
-              color: const Color(0xFF6B7280),
+              color: AppTheme.textMuted,
             ),
           ),
         ],
@@ -252,14 +254,14 @@ class DashboardScreen extends ConsumerWidget {
             Icon(
               Icons.calendar_month_outlined,
               size: 64,
-              color: const Color(0xFF6B7280).withOpacity(0.5),
+              color: AppTheme.textMuted.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 16),
             Text(
               'No bookings today',
               style: GoogleFonts.dmSans(
                 fontSize: 16,
-                color: const Color(0xFF6B7280),
+                color: AppTheme.textMuted,
               ),
             ),
           ],
@@ -275,20 +277,8 @@ class DashboardScreen extends ConsumerWidget {
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6366F1),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
             onPressed: () => context.go('/my-link'),
-            child: Text(
-              'Share My Link',
-              style: GoogleFonts.dmSans(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
+            child: const Text('Share My Link'),
           ),
         ),
         const SizedBox(height: 12),
@@ -296,23 +286,8 @@ class DashboardScreen extends ConsumerWidget {
           width: double.infinity,
           height: 50,
           child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              side: const BorderSide(
-                color: Color(0xFF6366F1),
-                width: 2,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
             onPressed: () => _showAddBookingSheet(context),
-            child: Text(
-              'Add Booking',
-              style: GoogleFonts.dmSans(
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF6366F1),
-              ),
-            ),
+            child: const Text('Add Booking'),
           ),
         ),
       ],
@@ -322,7 +297,7 @@ class DashboardScreen extends ConsumerWidget {
   void _showAddBookingSheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF0D1120),
+      backgroundColor: AppTheme.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -343,29 +318,21 @@ class DashboardScreen extends ConsumerWidget {
               style: GoogleFonts.syne(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFFF0EDE8),
+                color: AppTheme.textPrimary,
               ),
             ),
             const SizedBox(height: 16),
             TextField(
-              style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
-              decoration: InputDecoration(
+              style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
+              decoration: const InputDecoration(
                 labelText: 'Customer Name',
-                labelStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
               ),
             ),
             const SizedBox(height: 12),
             TextField(
-              style: GoogleFonts.dmSans(color: const Color(0xFFF0EDE8)),
-              decoration: InputDecoration(
+              style: GoogleFonts.dmSans(color: AppTheme.textPrimary),
+              decoration: const InputDecoration(
                 labelText: 'Phone Number',
-                labelStyle: GoogleFonts.dmSans(color: const Color(0xFF6B7280)),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
               ),
             ),
             const SizedBox(height: 16),

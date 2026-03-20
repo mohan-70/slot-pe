@@ -23,7 +23,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp.router(
       title: 'Slotpe',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
+      theme: AppTheme.lightTheme,
       routerConfig: goRouter,
     );
   }
