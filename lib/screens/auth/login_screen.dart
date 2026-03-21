@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in_web/google_sign_in_web.dart' as gis;
 import '../../core/theme/app_theme.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/business_provider.dart';
@@ -39,8 +38,7 @@ class LoginScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 48),
-              kIsWeb 
-                ? GoogleSignInButtonWeb(
+              _GoogleSignInButton(
                     onPressed: () async {
                       try {
                         final authService = ref.read(authServiceProvider);
@@ -49,43 +47,6 @@ class LoginScreen extends ConsumerWidget {
                           final business = await ref
                               .read(businessServiceProvider)
                               .getBusinessByOwnerId(userCredential.user!.uid);
-                          if (context.mounted) {
-                            if (business != null) {
-                              context.go('/dashboard');
-                            } else {
-                              context.go('/setup');
-                            }
-                          }
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                'Error signing in: $e',
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              backgroundColor: AppTheme.error,
-                            ),
-                          );
-                        }
-                      }
-                    },
-                  )
-                : _GoogleSignInButton(
-                    onPressed: () async {
-                      try {
-                        final authService = ref.read(authServiceProvider);
-                        final userCredential = await authService.signInWithGoogle();
-
-                        if (userCredential != null && context.mounted) {
-                          final business = await ref
-                              .read(businessServiceProvider)
-                              .getBusinessByOwnerId(
-                                userCredential.user!.uid,
-                              );
-
                           if (context.mounted) {
                             if (business != null) {
                               context.go('/dashboard');
@@ -118,39 +79,7 @@ class LoginScreen extends ConsumerWidget {
   }
 }
 
-class GoogleSignInButtonWeb extends StatefulWidget {
-  final VoidCallback onPressed;
 
-  const GoogleSignInButtonWeb({Key? key, required this.onPressed}) : super(key: key);
-
-  @override
-  State<GoogleSignInButtonWeb> createState() => _GoogleSignInButtonWebState();
-}
-
-class _GoogleSignInButtonWebState extends State<GoogleSignInButtonWeb> {
-  bool isLoading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return gis.renderButton(
-      key: ValueKey('google-signin'),
-      text: 'signin_with',
-      theme: 'filled_blue',
-      size: 'large',
-      type: 'standard',
-      shape: 'rectangular',
-      logoAlignment: 'left',
-      onPressed: () async {
-        setState(() => isLoading = true);
-        try {
-          await widget.onPressed();
-        } finally {
-          if (mounted) setState(() => isLoading = false);
-        }
-      },
-    );
-  }
-}
 
 class _GoogleSignInButton extends StatefulWidget {
   final Future<void> Function() onPressed;

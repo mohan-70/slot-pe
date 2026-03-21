@@ -151,7 +151,7 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          IntlPhoneField(
+            IntlPhoneField(
             decoration: InputDecoration(
               labelText: 'Phone',
               hintText: 'Enter phone number',
@@ -168,11 +168,10 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
               ),
             ),
             initialCountryCode: 'IN',
-            showCountryFlags: true,
-            showCountryCode: true,
+
             onChanged: (phoneNumber) => setState(() => fullPhoneNumber = phoneNumber.completeNumber),
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Please enter a valid phone number';
+              if (value == null || value.number.isEmpty) return 'Please enter a valid phone number';
               return null;
             },
             style: const TextStyle(color: AppTheme.textPrimary),
