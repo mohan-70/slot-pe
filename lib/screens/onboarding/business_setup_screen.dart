@@ -6,6 +6,7 @@ import '../../core/theme/app_theme.dart';
 import '../../models/business_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/business_provider.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
 
 class BusinessSetupScreen extends ConsumerStatefulWidget {
   const BusinessSetupScreen({Key? key}) : super(key: key);
@@ -39,8 +40,8 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
 
   late TextEditingController businessNameController;
   late TextEditingController cityController;
-  late TextEditingController phoneController;
 
+  String? fullPhoneNumber;
   String? selectedCategory;
   List<String> selectedDays = [];
   TimeOfDay? openTime;
@@ -54,7 +55,6 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
     _pageController = PageController();
     businessNameController = TextEditingController();
     cityController = TextEditingController();
-    phoneController = TextEditingController();
 
     businessNameController.addListener(_updateSlug);
     cityController.addListener(_updateSlug);
@@ -76,7 +76,6 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
     _pageController.dispose();
     businessNameController.dispose();
     cityController.dispose();
-    phoneController.dispose();
     super.dispose();
   }
 
@@ -152,13 +151,31 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          TextField(
-            controller: phoneController,
-            style: const TextStyle(color: AppTheme.textPrimary),
-            decoration: const InputDecoration(
+          IntlPhoneField(
+            decoration: InputDecoration(
               labelText: 'Phone',
-              hintText: '+1 (555) 000-0000',
+              hintText: 'Enter phone number',
+              filled: true,
+              fillColor: AppTheme.surface.withOpacity(0.5),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.border),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppTheme.primary, width: 2),
+              ),
             ),
+            initialCountryCode: 'IN',
+            showCountryFlags: true,
+            showCountryCode: true,
+            onChanged: (phoneNumber) => setState(() => fullPhoneNumber = phoneNumber.completeNumber),
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'Please enter a valid phone number';
+              return null;
+            },
+            style: const TextStyle(color: AppTheme.textPrimary),
           ),
           const SizedBox(height: 24),
           Container(
@@ -197,7 +214,7 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                 if (businessNameController.text.isEmpty ||
                     selectedCategory == null ||
                     cityController.text.isEmpty ||
-                    phoneController.text.isEmpty) {
+                    fullPhoneNumber == null || fullPhoneNumber!.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
@@ -371,7 +388,7 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                 if (businessNameController.text.isEmpty ||
                     selectedCategory == null ||
                     cityController.text.isEmpty ||
-                    phoneController.text.isEmpty ||
+                    fullPhoneNumber == null || fullPhoneNumber!.isEmpty ||
                     selectedDays.isEmpty ||
                     openTime == null ||
                     closeTime == null ||
@@ -394,7 +411,7 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
                     ownerId: user.uid,
                     name: businessNameController.text,
                     category: selectedCategory!,
-                    phone: phoneController.text,
+                    phone: fullPhoneNumber!,
                     city: cityController.text,
                     bookingSlug: generatedSlug!,
                     workingDays: selectedDays,
@@ -437,4 +454,4 @@ class _BusinessSetupScreenState extends ConsumerState<BusinessSetupScreen> {
       ),
     );
   }
-}
+}
